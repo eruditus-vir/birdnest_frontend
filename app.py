@@ -3,7 +3,7 @@ import datetime
 import streamlit as st
 import pandas as pd
 import logging
-from sqlalchemy import delete, update, select
+from sqlalchemy import select
 from sqlalchemy.orm import relationship, Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import ForeignKey
@@ -131,6 +131,12 @@ def string_to_stmt_factory(q: Query):
 # Uses st.experimental_memo to only rerun when the query changes or after 10 seconds.
 @st.experimental_memo(ttl=10)
 def run_query(query: Query):
+    """
+    function to run query require hashable input and output
+    function only usable for Drones or ViolatedPilots because they have to_dict
+    :param query:
+    :return:
+    """
     stmt = string_to_stmt_factory(query)
     session = Session(engine)
     results = session.execute(stmt).scalars().all()
@@ -140,18 +146,32 @@ def run_query(query: Query):
 
 
 def highlight_not_null(s, column):
+    """
+    for apply method on Dataframe Styler to highlight not null
+    :param s:
+    :param column:
+    :return:
+    """
     is_not_null = pd.Series(data=False, index=s.index)
     is_not_null[column] = ~pd.isna(s.loc[column])
     return ['background-color: darkred' if is_not_null.any() else '' for v in is_not_null]
 
 
 def distance_from_nest_in_meter(x, y):
+    """
+    expect x and y to come in x meter * 1000, hence require divide by 1000 to become meter
+    :param x:
+    :param y:
+    :return:
+    """
     return math.sqrt((x - CENTER_X) ** 2 + (y - CENTER_Y) ** 2) / 1000
 
 
-place_holder = st.empty()
+place_holder = st.empty()  # component required for automated updating and layout
 
+# Main Application Loop
 while True:
+    # Fetch Data
     drones = run_query(Query.DRONES)
     pilots = run_query(Query.PILOTS)
 
@@ -196,12 +216,14 @@ while True:
 
     with place_holder:
         with place_holder.container():
+            # Write title and subheaders
             st.title('Recent Birdnest NDZ Violators')
             st.markdown('Last Data Update: {}'.format(datetime.datetime.now().isoformat()))
             st.markdown('Data is updated every few seconds.')
             st.markdown('Use below tabs to switch between different viewings.')
             tab1, tab2, tab3, tab4 = st.tabs(["Pilots", "Drones", "Drone Positions", "Violation Positions"])
 
+            # Create pilot dataframe tab
             with tab1:
                 st.markdown("### Pilots who recently violate NDZ")
                 st.markdown("Table indicates details of those who recently violate NDZ (10 minutes).")
@@ -214,6 +236,8 @@ while True:
                                                               'nearest_violation_y',
                                                               'nearest_violation_distance_in_meter']),
                              use_container_width=True)
+
+            # Create drone dataframe tab
             with tab2:
                 st.markdown("### Drones Detected")
                 st.markdown("Red rows indicate drones whose pilots have recently violated NDZ.")
@@ -229,9 +253,9 @@ while True:
                     ),
                     use_container_width=True)
 
-            # final plot
-            plt.close('all')
+            plt.close('all')  # close so that the plot dont get overwrite and cause memory overflow (potentially)
 
+            # Create current positions plot tab
             with tab3:
                 fig, ax = plt.subplots()
                 ndz_circle = plt.Circle((CENTER_X, CENTER_Y), RADIUS, color='b', fill=False)
@@ -250,6 +274,7 @@ while True:
                 ax.set_title("Drone Positions")
                 st.pyplot(fig)
 
+            # Create all violation positions tab
             with tab4:
                 fig, ax = plt.subplots()
                 ndz_circle = plt.Circle((CENTER_X, CENTER_Y), RADIUS, color='b', fill=False)
@@ -265,4 +290,5 @@ while True:
                 ax.tick_params(axis='both', which='major', labelsize=7)
                 ax.set_title("Violation Positions")
                 st.pyplot(fig)
+    # sleep for 3 seconds before rerunning this loop to automatically update data without refresh
     time.sleep(3)
