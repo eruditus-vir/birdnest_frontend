@@ -1,0 +1,7 @@
+streamlit
+pandas
+requests
+numpy
+SQLAlchemy<2.0
+psycopg2
+matplotlib
