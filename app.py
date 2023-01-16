@@ -195,6 +195,7 @@ while True:
     with place_holder:
         with place_holder.container():
             st.title('Recent Birdnest NDZ Violators')
+            st.subheader('Use the tabs to switch between different data viewing')
             tab1, tab2, tab3, tab4 = st.tabs(["Pilots", "Drones", "Plotted Drones", "Violation Positions"])
 
             with tab1:
@@ -239,7 +240,7 @@ while True:
                            marker='o', c='green')
                 ax.legend(
                     ['NDZ', 'Currently Violating NDZ', 'Recently Violate NDZ', 'Have not violate NDZ recently'],
-                    loc='upper center', bbox_to_anchor=(0.5, -0.05),
+                    loc='upper center', bbox_to_anchor=(0.5, 1.1),
                     fancybox=True, shadow=True, ncol=4)
                 st.pyplot(fig)
 
@@ -253,7 +254,7 @@ while True:
                            marker='^', c='orange')
                 ax.legend(
                     ['NDZ', 'Nearest Violations', 'Last Violations'],
-                    loc='upper center', bbox_to_anchor=(0.5, -0.05),
+                    loc='upper center', bbox_to_anchor=(0.5, 1.1),
                     fancybox=True, shadow=True, ncol=3)
                 st.pyplot(fig)
     time.sleep(3)
