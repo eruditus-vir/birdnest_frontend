@@ -1,3 +1,5 @@
+import datetime
+
 import streamlit as st
 import pandas as pd
 import logging
@@ -195,7 +197,9 @@ while True:
     with place_holder:
         with place_holder.container():
             st.title('Recent Birdnest NDZ Violators')
-            st.subheader('Use the tabs to switch between different data viewing (data is updated every few seconds)')
+            st.markdown('Last Data Update: {}'.format(datetime.datetime.now().isoformat()))
+            st.markdown('Data is updated every few seconds.')
+            st.markdown('Use below tabs to switch between different viewings.')
             tab1, tab2, tab3, tab4 = st.tabs(["Pilots", "Drones", "Drone Positions", "Violation Positions"])
 
             with tab1:
