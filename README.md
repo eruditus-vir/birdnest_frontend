@@ -8,12 +8,13 @@ The information about the assignment can be understood read here https://assignm
 
 ## Potential Improvement
 
-1.
+1. Interactive plot
+2. Code cleanup - currently, everything is in 1 file
 
 ## Challenges Faced
 
-1.
+1. 
 
 ## How to deploy
 
-1. 
+1. Deployed on streamlit cloud, it's quite straight forward. the secrets.toml file follow the format on streamlit site tutorial 
