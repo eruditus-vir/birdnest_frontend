@@ -195,7 +195,7 @@ while True:
     with place_holder:
         with place_holder.container():
             st.title('Recent Birdnest NDZ Violators')
-            st.subheader('Use the tabs to switch between different data viewing')
+            st.subheader('Use the tabs to switch between different data viewing (data is updated every few seconds)')
             tab1, tab2, tab3, tab4 = st.tabs(["Pilots", "Drones", "Drone Positions", "Violation Positions"])
 
             with tab1:
