@@ -46,8 +46,6 @@ class ViolatedPilots(Base):
     last_violation_y = sa.Column(sa.FLOAT)
     nearest_violation_x = sa.Column(sa.FLOAT)
     nearest_violation_y = sa.Column(sa.FLOAT)
-    # this relationship means that once violated pilots is deleted, foreign key in drone should be set to NULL
-    drone = relationship("Drones")
 
     def to_dict(self):
         return {
