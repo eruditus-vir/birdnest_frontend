@@ -12,7 +12,9 @@ import sqlalchemy as sa
 from enum import Enum
 import math
 import time
-import matplotlib.pyplot as plt
+# these 2 are the requirements because using pyplot can cause memory leak
+from matplotlib.figure import Figure
+from matplotlib.patches import Circle
 
 st.set_page_config(
     page_title="Recently Birdnest NDZ Violators",
@@ -251,12 +253,13 @@ while True:
                     ),
                     use_container_width=True)
 
-            plt.close('all')  # close so that the plot dont get overwrite and cause memory overflow (potentially)
+            # plt.close('all')  # close so that the plot dont get overwrite and cause memory overflow (potentially)
 
             # Create current positions plot tab
             with tab3:
-                fig, ax = plt.subplots()
-                ndz_circle = plt.Circle((CENTER_X, CENTER_Y), RADIUS, color='b', fill=False)
+                fig = Figure()  # instantiate Figure for plotting
+                ax = fig.subplots()
+                ndz_circle = Circle((CENTER_X, CENTER_Y), RADIUS, color='b', fill=False)
                 ax.add_patch(ndz_circle)
                 ax.scatter(bad_currently_violating['position_x'], bad_currently_violating['position_y'],
                            marker='x', c='red')
@@ -267,15 +270,16 @@ while True:
                 ax.legend(
                     ['NDZ', 'Currently Violating NDZ', 'Recently Violate NDZ', 'Have not violate NDZ recently'],
                     bbox_to_anchor=(1.04, 1), borderaxespad=0)
-                plt.subplots_adjust(right=0.8)
+                fig.subplots_adjust(right=0.8)
                 ax.tick_params(axis='both', which='major', labelsize=10)
                 ax.set_title("Drone Positions")
                 st.pyplot(fig)
 
             # Create all violation positions tab
             with tab4:
-                fig, ax = plt.subplots()
-                ndz_circle = plt.Circle((CENTER_X, CENTER_Y), RADIUS, color='b', fill=False)
+                fig = Figure()  # instantiate Figure for plotting
+                ax = fig.subplots()
+                ndz_circle = Circle((CENTER_X, CENTER_Y), RADIUS, color='b', fill=False)
                 ax.add_patch(ndz_circle)
                 ax.scatter(pilots_view['nearest_violation_x'], pilots_view['nearest_violation_y'],
                            marker='x', c='red')
@@ -284,7 +288,7 @@ while True:
                 ax.legend(
                     ['NDZ', 'Nearest Violations', 'Last Violations'],
                     bbox_to_anchor=(1.04, 1), borderaxespad=0)
-                plt.subplots_adjust(right=0.8)
+                fig.subplots_adjust(right=0.8)
                 ax.tick_params(axis='both', which='major', labelsize=7)
                 ax.set_title("Violation Positions")
                 st.pyplot(fig)
