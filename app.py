@@ -169,6 +169,15 @@ def distance_from_nest_in_meter(x, y):
 
 place_holder = st.empty()  # component required for automated updating and layout
 
+NAMES_NOT_TO_GARBAGE_COLLECT = {
+    'place_holder', 'distance_from_nest_in_meter', 'highlight_not_null', 'run_query', 'string_to_stmt_factory',
+    'init_connection', 'Base', 'CENTER_X', 'CENTER_Y', 'Circle', 'Drones', 'Enum', 'Figure',
+    'ForeignKey', 'Query', 'RADIUS', 'Session', 'ViolatedPilots', 'create_engine', 'datetime',
+    'NAMES_NOT_TO_GARBAGE_COLLECT', 'distance_from_nest_in_meter', 'datetime', 'engine', 'highlight_not_null',
+    'init_connection', 'logging', 'math', 'pd', 'relationship', 'sa', 'select', 'st', 'string_to_stmt_factory',
+    'time'
+}
+
 # Main Application Loop
 while True:
     # Fetch Data
@@ -294,3 +303,13 @@ while True:
                 st.pyplot(fig)
     # sleep for 3 seconds before rerunning this loop to automatically update data without refresh
     time.sleep(3)
+
+    # forced garbage collection process on everything created within this loop to prevent memory leak
+    # guess, since I solved the matplotlib pyplot with Fig and Circle, I belived the issue is with table
+    # I simply clean up everything for now
+    # https://github.com/streamlit/streamlit/issues/2870
+    for name in dir():
+        if not name.startswith('_') and name not in NAMES_NOT_TO_GARBAGE_COLLECT:
+            del globals()[name]
+    import gc
+    gc.collect()
