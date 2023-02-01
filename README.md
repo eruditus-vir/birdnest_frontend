@@ -1,5 +1,8 @@
 # birdnest_frontend
 
+## Current Deployment 
+https://eruditus-vir-birdnest-frontend-app-lizb9r.streamlit.app/
+
 ## Background
 
 This is the frontend component of assignment provided by company Reaktor.
